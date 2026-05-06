@@ -3,8 +3,13 @@ author: 'commit.show'
 description: 'Run a commit.show audit on a repo and post the score as a sticky comment on the pull request.'
 
 branding:
+  # GitHub Marketplace branding color choices are restricted to:
+  # white, yellow, blue, green, orange, red, purple, gray-dark.
+  # Our brand is navy + gold; 'gray-dark' renders the icon on a near-
+  # navy background which sits closer to commit.show's identity than
+  # the harsher 'yellow' option.
   icon: bar-chart-2
-  color: yellow
+  color: gray-dark
 
 inputs:
   target:
