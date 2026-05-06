@@ -1,0 +1,53 @@
+name: 'commit.show audit'
+author: 'commit.show'
+description: 'Run a commit.show audit on a repo and post the score as a sticky comment on the pull request.'
+
+branding:
+  icon: bar-chart-2
+  color: yellow
+
+inputs:
+  target:
+    description: 'Repo to audit. Defaults to the current repository (owner/repo or github.com/owner/repo).'
+    required: false
+  refresh:
+    description: 'Bypass the 7-day cache and trigger a fresh audit. Counts against the IP rate cap.'
+    required: false
+    default: 'false'
+  comment:
+    description: 'Post (or update) a sticky comment on the pull request with the audit summary.'
+    required: false
+    default: 'true'
+  fail-below:
+    description: 'Fail the check if the total score falls below this number. Leave empty to never fail.'
+    required: false
+  github-token:
+    description: 'Token used to post the pull-request comment. Needs pull-requests:write.'
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  score:
+    description: 'Total score out of 100.'
+    value: ${{ steps.audit.outputs.score }}
+  band:
+    description: 'Score band string (e.g. rookie, building, strong).'
+    value: ${{ steps.audit.outputs.band }}
+  url:
+    description: 'URL of the audit report on commit.show.'
+    value: ${{ steps.audit.outputs.url }}
+
+runs:
+  using: 'composite'
+  steps:
+    - id: audit
+      shell: bash
+      run: ${{ github.action_path }}/scripts/run-audit.sh
+      env:
+        INPUT_TARGET:     ${{ inputs.target }}
+        INPUT_REFRESH:    ${{ inputs.refresh }}
+        INPUT_COMMENT:    ${{ inputs.comment }}
+        INPUT_FAIL_BELOW: ${{ inputs.fail-below }}
+        GH_TOKEN:         ${{ inputs.github-token }}
+        GH_REPO:          ${{ github.repository }}
+        GH_PR_NUMBER:     ${{ github.event.pull_request.number }}

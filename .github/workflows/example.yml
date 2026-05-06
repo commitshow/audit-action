@@ -1,0 +1,20 @@
+# Example workflow that uses this action against the action's own repo.
+# Useful as a smoke test once the action ships its first tagged release.
+#
+# Doubles as the recommended template for downstream users — the
+# README links here.
+
+name: audit
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  pull-requests: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run commit.show audit
+        uses: ./
